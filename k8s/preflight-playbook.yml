@@ -22,7 +22,7 @@
 
     - name: Adding apt repository for Kubernetes
       apt_repository:
-        repo: deb https://apt.kubernetes.io/ kubernetes-bionic main
+        repo: deb https://apt.kubernetes.io/  kubernetes-xenial main
         state: present
         filename: kubernetes.list
 
@@ -41,6 +41,7 @@
       lineinfile:
         path: /etc/default/kubelet
         line: KUBELET_EXTRA_ARGS=--node-ip={{ ansible_eth0.ipv4.address }}
+        create: yes
 
     - name: Restart kubelet
       service:
