@@ -37,7 +37,7 @@ ansible-playbook docker/docker-arm-playbook.yml -i inventory
 
 echo "
 ########################################################################################
-#                              Install K8S on Nodes                                 #
+#                              Install K8S on Nodes                                    #
 ########################################################################################
 "
 ansible-playbook k8s/preflight-playbook.yml -i inventory
