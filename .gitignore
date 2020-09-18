@@ -1,6 +1,9 @@
 ### Ansible ###
 *.retry
 
+# k8s join script
+join-command
+
 ### Vagrant ###
 # General
 .vagrant/

@@ -1,58 +1,51 @@
 ---
-- hosts: all
-  become: true
-  tasks:
-    - name: Install packages that allow apt to be used over HTTPS
-      apt:
-        name: "{{ packages }}"
-        state: present
-        update_cache: yes
-      vars:
-        packages:
-          - apt-transport-https
-          - ca-certificates
-          - curl
-          - gnupg-agent
-          - software-properties-common
+- name: Install packages that allow apt to be used over HTTPS
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
 
-    - name: Add an apt signing key for Docker
-      apt_key:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        state: present
+- name: Add an apt signing key for Docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
 
-    - name: Add apt repository for stable version on x86_64
-      apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
-        state: present
-      when: ansible_facts.architecture == "x86_64"
+- name: Add apt repository for stable version on x86_64
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+  when: ansible_facts.architecture == "x86_64"
 
-    - name: Add apt repository for stable version on arm64
-      apt_repository:
-        repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu bionic stable
-        state: present
-      when:
-        - ( ansible_facts.architecture is search("arm") and
-          ansible_facts.userspace_bits == "64" ) or
-          ansible_facts.architecture is search("aarch64")
+- name: Add apt repository for stable version on arm64
+  apt_repository:
+    repo: deb [arch=arm64] https://download.docker.com/linux/ubuntu bionic stable
+    state: present
+  when:
+    - ( ansible_facts.architecture is search("arm") and
+      ansible_facts.userspace_bits == "64" ) or
+      ansible_facts.architecture is search("aarch64")
 
-    - name: Install docker and its dependecies
-      apt:
-        name: "{{ packages }}"
-        state: present
-        update_cache: yes
-      vars:
-        packages:
-          - docker-ce
-          - docker-ce-cli
-          - containerd.io
-      notify:
-        - docker status
+- name: Install docker and its dependecies
+  apt:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  vars:
+    packages:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+  notify:
+    - docker status
 
-    - name: Add ubuntu user to docker group
-      user:
-        name: ubuntu
-        group: docker
-
-  handlers:
-    - name: docker status
-      service: name=docker state=started
+- name: Add ubuntu user to docker group
+  user:
+    name: ubuntu
+    group: docker
