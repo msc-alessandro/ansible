@@ -1,5 +1,5 @@
 ---
-- hosts: master
+- hosts: all
   become: true
   tasks:
     - name: Copy the join command to server location

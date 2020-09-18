@@ -1,0 +1,18 @@
+---
+- hosts: k8s_cluster
+  gather_facts: yes
+  become: yes
+  roles:
+    - role: prereq
+    - role: docker
+    - role: k8s/preflight
+
+- hosts: master
+  become: yes
+  roles:
+    - role: k8s/master
+
+- hosts: node
+  become: yes
+  roles:
+    - role: k8s/node
