@@ -2,29 +2,29 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: rabbitmq
-  namespace: test-rabbitmq
+  namespace: default
 spec:
   selector:
     matchLabels:
       app: "rabbitmq"
   # headless service that gives network identity to the RMQ nodes, and enables them to cluster
   serviceName: rabbitmq-headless # serviceName is the name of the service that governs this StatefulSet. This service must exist before the StatefulSet, and is responsible for the network identity of the set. Pods get DNS/hostnames that follow the pattern: pod-specific-string.serviceName.default.svc.cluster.local where "pod-specific-string" is managed by the StatefulSet controller.
-  replicas: 3
+  replicas: 1
   volumeClaimTemplates:
     - metadata:
         name: rabbitmq-data
-        namespace: test-rabbitmq
+        namespace: default
       spec:
         storageClassName: standard
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: "3Gi"
+            storage: "1Gi"
   template:
     metadata:
       name: rabbitmq
-      namespace: test-rabbitmq
+      namespace: default
       labels:
         app: rabbitmq
     spec:
