@@ -9,7 +9,7 @@ spec:
     matchLabels:
       app: "rabbitmq"
   serviceName: rabbitmq-headless
-  replicas: 2
+  replicas: 3
   volumeClaimTemplates:
     - metadata:
         name: rabbitmq-data

@@ -1,5 +1,5 @@
 IMAGE_NAME = "bento/ubuntu-18.04"
-N = 2
+N = 1
 
 
 Vagrant.configure("2") do |config|
@@ -14,14 +14,14 @@ Vagrant.configure("2") do |config|
         h.cpus = 2
     end
 
-    config.vm.define "master" do |master|
+    config.vm.define "kubernetes-master" do |master|
         master.vm.box = IMAGE_NAME
         master.vm.network "private_network", ip: "192.168.50.10"
-        master.vm.hostname = "master"
+        master.vm.hostname = "kubernetes-master"
         master.vm.synced_folder "resources/", "/vagrant", disabled: false
     end
 
-    (1..N).each do |i|
+    (0..N).each do |i|
         config.vm.define "node-#{i}" do |node|
             node.vm.box = IMAGE_NAME
             node.vm.network "private_network", ip: "192.168.50.#{i + 10}"

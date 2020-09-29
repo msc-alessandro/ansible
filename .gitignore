@@ -4,6 +4,9 @@
 # k8s join script
 join-command
 
+# k3s token
+k3s-token
+
 ### Vagrant ###
 # General
 .vagrant/

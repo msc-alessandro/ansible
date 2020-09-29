@@ -1,4 +1,7 @@
 ---
+- name: Lookup local token file
+  set_fact:
+    token: "{{ lookup('file', 'k3s-token') }}"
 
 - name: Copy K3s service file
   template:

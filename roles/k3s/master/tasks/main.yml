@@ -38,6 +38,10 @@
   set_fact:
     token: "{{ node_token.content | b64decode | regex_replace('\n', '') }}"
 
+- name: Copy token to local file
+  become: false
+  local_action: copy content="{{ hostvars[groups['master'][0]]['token'] }}" dest="k3s-token"
+
 - name: Restore node-token file access
   file:
     path: /var/lib/rancher/k3s/server

@@ -14,4 +14,4 @@ spec:
   selector:
     app: nginx
   externalIPs:
-    - 3.236.54.101
+    - 3.83.185.111

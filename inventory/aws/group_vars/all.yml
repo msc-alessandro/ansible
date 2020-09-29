@@ -1,8 +1,10 @@
 ---
-k3s_version: v1.17.5+k3s1
+k3s_version: v1.19.2+k3s1
+k8s_version: 1.18.0-00
 ansible_user: ubuntu
-ansible_ssh_private_key_file: /home/alessandrocb/.ssh/AWS/teste.pem
+ansible_ssh_private_key_file: ~/.ssh/AWS/teste.pem
 systemd_dir: /etc/systemd/system
 master_ip: "{{ hostvars[groups['master'][0]]['ansible_host'] | default(groups['master'][0]) }}"
-extra_server_args: ""
-extra_agent_args: ""
+extra_server_args: "--docker --no-deploy traefik"
+extra_agent_args: "--docker"
+
