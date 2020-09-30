@@ -5,7 +5,7 @@
   register: files_found
 
 - name: Initialize the Kubernetes cluster using kubeadm
-  command: kubeadm init --apiserver-advertise-address="{{ ansible_default_ipv4.address }}" --apiserver-cert-extra-sans="{{ ansible_default_ipv4.address }}"  --node-name kubernestes-master --pod-network-cidr=10.244.0.0/16 --skip-phases=addon/kube-proxy
+  command: kubeadm init --apiserver-advertise-address="{{ ansible_default_ipv4.address }}" --apiserver-cert-extra-sans="{{ ansible_default_ipv4.address }}"  --node-name {{ new_hostname }} --pod-network-cidr=10.244.0.0/16
   when: files_found.matched == 0
   register: kubeadm
 
@@ -14,7 +14,7 @@
     path: /home/{{ ansible_user }}/.kube
   register: check_file
 
-- name: Setup kubeconfig for ubuntu user
+- name: Setup kubeconfig for {{ ansible_user }} user
   command: "{{ item }}"
   with_items:
     - mkdir -p /home/{{ ansible_user }}/.kube

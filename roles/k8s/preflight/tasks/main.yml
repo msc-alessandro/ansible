@@ -12,27 +12,65 @@
   command: swapoff -a
   when: ansible_swaptotal_mb > 0
 
+- name: Put SELinux in permissive mode, logging actions that would be blocked.
+  ansible.posix.selinux:
+    policy: targeted
+    state: permissive
+  when:
+    - ansible_distribution == 'CentOS'
+
 - name: Add an apt signing key for Kubernetes
   apt_key:
     url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
     state: present
+  when:
+    - (ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian')
 
 - name: Adding apt repository for Kubernetes
   apt_repository:
     repo: deb https://apt.kubernetes.io/  kubernetes-xenial main
     state: present
     filename: kubernetes.list
+  when:
+    - (ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian')
 
-- name: Install Kubernetes binaries
+- name: Copy yum Kubernetes repo file
+  register: k8s_repo
+  template:
+    src: "kubernetes.repo.j2"
+    dest: "/etc/yum.repos.d/kubernetes.repo"
+    owner: root
+    group: root
+    mode: 0644
+  when:
+    - ansible_distribution == 'CentOS'
+
+- name: Install Kubernetes binaries on APT based distributions
   apt:
     name: "{{ packages }}"
     state: present
     update_cache: yes
   vars:
     packages:
-      - kubelet={{ k8s_version }}
-      - kubeadm={{ k8s_version }}
-      - kubectl={{ k8s_version }}
+      - kubelet={{ k8s_version_apt }}
+      - kubeadm={{ k8s_version_apt }}
+      - kubectl={{ k8s_version_apt }}
+  when:
+    - (ansible_distribution == 'Ubuntu' or ansible_distribution == 'Debian')
+
+- name: Install Kubernetes binaries on YUM based distributions
+  yum:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+    disable_excludes: kubernetes
+  vars:
+    packages:
+      - kubelet-{{ k8s_version_yum }}
+      - kubeadm-{{ k8s_version_yum }}
+      - kubectl-{{ k8s_version_yum }}
+  when:
+    - ansible_distribution == 'CentOS'
 
 - name: Configure node ip
   lineinfile:
